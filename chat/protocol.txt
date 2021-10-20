@@ -1,0 +1,42 @@
+The protocol for the chat system uses 4 types of messages:
+CNCT - The initial message sent to the server by a client to establish a chat session
+ACKC - The message the server sends to let a client know the session is established
+MESG - A chat message from a user, sent to/from the server
+QUIT - The message a client sends to let the server know the user is leaving
+
+A typical session should have a communication pattern like the following:
+client            server
+   -------CNCT------>
+   <------ACKC-------
+   -------MESG------>
+   <------MESG-------
+   <------MESG-------
+   -------MESG------>
+        .......
+   -------QUIT------>
+
+Note: the sending and recieving does not neccessarily take turns between the client and server. It is possible that many messages will be received by the client before the next time the client sends a message.
+
+The client must send a CNCT before sending a MESG to the server. The server should not send MESGs to the client until after the CNCT has been ACKCed. The client should send a QUIT at the end of session but the server should gracefully handle clients leaving without sending a QUIT first.
+
+
+Message format:
+CNCT - 6+X bytes total
+4 bytes for the characters CNCT
+2 bytes for a 16 bit bigendian integer representing the number of characters in the username
+X bytes for the characters in the username (not '\0' terminated)
+
+ACKC - 4 bytes total
+4 bytes for the characters ACKC
+
+MESG - 8+X+Y bytes total
+4 bytes for the characters MESG
+2 bytes for a 16 bit bigendian integer representing the number of characters in the username
+X bytes for the characters in the username (not '\0' terminated)
+2 bytes for a 16 bit bigendian integer representing the number of characters in the message
+Y bytes for the message (not '\0' terminated)
+
+QUIT - 4 bytes total
+4 bytes for the characters QUIT
+
+For deeper details, take a look at the server code... It generates or parses each of these message types.
