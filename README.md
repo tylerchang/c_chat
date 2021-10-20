@@ -10,8 +10,10 @@ Open individual terminal windows for the server and up to 5 clients.
 To start the server, run ./chats <port number>
   
 The port number can be any number between 5000 and 9999.
+  
 
 To start a client, run ./chatc 127.0.0.1 <port number>
+  
   
 The port number must match the server's port
 
